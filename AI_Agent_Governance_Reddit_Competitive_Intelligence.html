@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Governance &amp; Security — Reddit Competitive Intelligence</title>
+<style>
+:root{
+  --bg:#F1F3F7; --card:#FFFFFF; --line:#E4E8EF; --line2:#D8DEE9;
+  --ink:#12172A; --muted:#5C6478; --faint:#98A2B3;
+  --accent:#3454D1; --accent-soft:#E4EAFC; --accent-tint:#F4F6FE; --accent-ink:#22337A;
+  --pos:#1E9D6B; --pos-soft:#E1F5EC;
+  --neu:#D9DEE8; --neu-soft:#EEF1F6;
+  --neg:#D6455B; --neg-soft:#FBE6EA;
+  --amber:#C9822E; --amber-soft:#FBEEDD;
+  --shadow:0 1px 2px rgba(18,23,42,.04),0 8px 24px rgba(18,23,42,.05);
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent-soft)}
+
+header{position:sticky;top:0;z-index:50;background:rgba(241,243,247,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar{max-width:1220px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.02em}
+.brand .mark{width:24px;height:24px;border-radius:7px;background:linear-gradient(155deg,var(--accent),#1D2E8F);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800}
+.pill{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-soft);border:1px solid #D3DBFA;padding:4px 10px;border-radius:999px}
+nav{margin-left:auto;display:flex;gap:1px;flex-wrap:wrap}
+nav a{font-size:12.5px;font-weight:500;color:var(--muted);padding:7px 10px;border-radius:8px;transition:.15s;white-space:nowrap}
+nav a:hover{color:var(--ink);background:var(--card)}
+nav a.active{color:var(--accent);background:var(--accent-tint);font-weight:600}
+
+/* ---------- global page nav ---------- */
+.gnav{border-bottom:1px solid var(--line);background:var(--card)}
+.gnav-inner{max-width:1220px;margin:0 auto;padding:8px 24px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.gnav .glabel{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-right:4px}
+.gnav a{font-size:12px;font-weight:600;color:var(--muted);padding:6px 11px;border-radius:8px;transition:.15s;white-space:nowrap}
+.gnav a:hover{color:var(--ink);background:var(--accent-tint)}
+.gnav a.active{color:var(--accent);background:var(--accent-tint)}
+.gnav a.soon{color:var(--faint);opacity:.6}
+
+main{max-width:1220px;margin:0 auto;padding:0 24px 100px}
+section{padding-top:56px;scroll-margin-top:76px}
+.eyebrow{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.eyebrow .n{font-family:'JetBrains Mono';font-size:10.5px;color:var(--faint);border:1px solid var(--line2);border-radius:6px;padding:1px 6px}
+h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+h2 .hl{color:var(--accent)}
+.sub{color:var(--muted);font-size:14.5px;margin-bottom:22px;max-width:700px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+
+/* hero */
+.hero{padding-top:40px}
+.statgrid{grid-template-columns:repeat(3,1fr)}
+.compcard{padding:18px 18px 16px;border-radius:var(--radius);position:relative;overflow:hidden}
+.compcard .dot{position:absolute;top:0;left:0;width:5px;height:100%}
+.compcard .nm{font-size:13.5px;font-weight:700;margin-bottom:12px;padding-left:10px}
+.compcard .row{display:flex;align-items:baseline;gap:8px;padding-left:10px;margin-bottom:4px}
+.compcard .v{font-family:'JetBrains Mono';font-weight:700;font-size:22px;letter-spacing:-.03em}
+.compcard .k{font-size:11px;color:var(--muted)}
+.compcard .foot{padding-left:10px;margin-top:10px;font-size:11.5px;color:var(--faint)}
+.scalebar{display:flex;gap:22px;flex-wrap:wrap;margin-top:18px;padding:14px 18px;font-size:12.5px;color:var(--muted)}
+.scalebar b{font-family:'JetBrains Mono';color:var(--ink);font-weight:700}
+
+/* finding / landscape */
+.findgrid{grid-template-columns:1.1fr .9fr;align-items:stretch}
+.find-call{padding:26px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(160deg,#fff,var(--accent-tint));border-color:#D3DBFA}
+.find-call h3{font-size:17px;font-weight:700;margin:2px 0 8px;letter-spacing:-.01em}
+.find-call p{font-size:13.5px;color:var(--muted);margin-bottom:8px}
+.bignum{font-family:'JetBrains Mono';font-weight:700;font-size:56px;letter-spacing:-.04em;line-height:.95;color:var(--accent)}
+.callout-list{padding:22px}
+.callout-list h4{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:14px}
+.cl-item{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--line)}
+.cl-item:last-child{border-bottom:none}
+.cl-item .ico{width:26px;height:26px;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.cl-item .txt b{font-size:13px;display:block;margin-bottom:2px}
+.cl-item .txt span{font-size:12px;color:var(--muted)}
+
+/* kpi row */
+.kpis{grid-template-columns:repeat(4,1fr)}
+.kpi{padding:16px 18px}
+.kpi .k{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.kpi .v{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-weight:700;font-size:23px;letter-spacing:-.03em}
+.kpi .d{font-size:11.5px;color:var(--faint);margin-top:5px}
+.swatch{width:9px;height:9px;border-radius:50%}
+
+/* ranked bars (SOV) */
+.legend{display:flex;gap:16px;align-items:center;margin:4px 0 14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.toolwrap{padding:6px 22px 18px}
+.trow{display:grid;grid-template-columns:20px 168px 1fr 76px;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.trow:last-child{border-bottom:none}
+.trow .rank{font-family:'JetBrains Mono';font-size:11.5px;color:var(--faint);text-align:right}
+.trow .nm{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbar{height:22px;background:var(--neu-soft);border-radius:6px;overflow:hidden;display:flex;cursor:default}
+.sbar i{height:100%;display:block}
+.sp{background:var(--pos)}.sn{background:var(--neu)}.sg{background:var(--neg)}
+.trow .ct{font-family:'JetBrains Mono';font-weight:700;font-size:13.5px;text-align:right}
+.trow .ct small{display:block;font-weight:500;font-size:9.5px;color:var(--faint)}
+
+/* two col */
+.two{grid-template-columns:1fr 1fr}
+.panel{padding:22px}
+.panel h3{font-size:14.5px;font-weight:700;margin-bottom:3px;letter-spacing:-.01em}
+.panel .ps{font-size:12px;color:var(--muted);margin-bottom:16px}
+
+/* diverging sentiment */
+.dvrow{display:grid;grid-template-columns:150px 1fr 42px;align-items:center;gap:10px;margin-bottom:9px;font-size:12.5px}
+.dvrow .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dvtrack{position:relative;height:19px;background:linear-gradient(90deg,var(--neg-soft),transparent 49%,transparent 51%,var(--pos-soft));border-radius:6px}
+.dvtrack .mid{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--line2)}
+.dvtrack .fp{position:absolute;left:50%;top:0;bottom:0;background:var(--pos);border-radius:0 5px 5px 0}
+.dvtrack .fn{position:absolute;right:50%;top:0;bottom:0;background:var(--neg);border-radius:5px 0 0 5px}
+.dvrow .val{font-family:'JetBrains Mono';font-weight:700;text-align:right;font-size:12px}
+
+/* donut */
+.donutwrap{display:flex;align-items:center;gap:22px}
+.dleg{display:flex;flex-direction:column;gap:10px}
+.dleg div{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.dleg b{font-family:'JetBrains Mono';margin-left:auto;padding-left:14px}
+
+/* bars list */
+.blist .b{display:grid;grid-template-columns:126px 1fr 38px;align-items:center;gap:10px;margin-bottom:7px}
+.blist .b .l{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blist .b .t{height:15px;background:var(--accent-tint);border-radius:5px;overflow:hidden}
+.blist .b .t i{display:block;height:100%;background:linear-gradient(90deg,#7B93E8,var(--accent));border-radius:5px}
+.blist .b .c{font-family:'JetBrains Mono';font-weight:700;font-size:12px;text-align:right;color:var(--muted)}
+.topicgrid{grid-template-columns:1fr 1fr;gap:8px 30px}
+
+/* pain matrix */
+.painwrap{overflow-x:auto}
+.paintbl{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap}
+.paintbl th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line2)}
+.paintbl td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:center}
+.paintbl tr:last-child td{border-bottom:none}
+.paintbl .lab{text-align:left;font-weight:600}
+.heat{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:22px;border-radius:6px;font-family:'JetBrains Mono';font-weight:700;font-size:11.5px}
+
+/* posts table */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line2)}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--accent-tint)}
+.tbl .ti{font-weight:600;max-width:400px}
+.tbl .ti a:hover{color:var(--accent)}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.chip{font-size:10px;font-weight:600;color:var(--accent-ink);background:var(--accent-tint);border:1px solid #DCE3FA;padding:2px 7px;border-radius:6px}
+.sr{color:var(--muted);font-size:11.5px;white-space:nowrap}
+.mt{font-family:'JetBrains Mono';font-weight:700;text-align:right;white-space:nowrap}
+.mt small{color:var(--faint);font-weight:500}
+
+/* quote cards */
+.qgrid{grid-template-columns:1fr 1fr}
+.qcard{padding:14px 16px;border-radius:11px;font-size:12.5px;line-height:1.55;margin-bottom:10px;border:1px solid}
+.qcard.pos{background:var(--pos-soft);border-color:#BEE6D2;color:#0F5A3D}
+.qcard.neg{background:var(--neg-soft);border-color:#F3C6CD;color:#7C2233}
+.qcard a{display:block;margin-top:8px;font-size:11px;font-weight:600;opacity:.75}
+.qcard a:hover{opacity:1;text-decoration:underline}
+
+/* trend chart */
+.trendwrap{padding:20px 22px 8px}
+.trend-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:10px;padding:0 4px 14px}
+.trend-legend span{display:flex;align-items:center;gap:6px}
+.trend-legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+
+/* subreddits */
+.srgrid{grid-template-columns:1.15fr 1fr}
+.srchips{display:flex;flex-wrap:wrap;gap:7px}
+.srchip{font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:8px;background:var(--neu-soft);color:var(--muted);display:flex;align-items:center;gap:6px}
+.srchip b{font-family:'JetBrains Mono';color:var(--ink)}
+
+/* adjacent tools */
+.adjgrid{grid-template-columns:repeat(3,1fr)}
+.adjcard{padding:16px}
+.adjcard .nm{font-weight:700;font-size:13.5px;margin-bottom:4px}
+.adjcard .cnt{font-family:'JetBrains Mono';font-size:11px;color:var(--muted);margin-bottom:8px}
+.adjcard .q{font-size:11.5px;color:var(--muted);line-height:1.5;font-style:italic}
+.adjcard .tag{display:inline-block;margin-bottom:8px;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:5px}
+.tag.security{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.infra{background:var(--amber-soft);color:#7A501C}
+.tag.content{background:var(--neu-soft);color:var(--muted)}
+
+/* deep dive */
+.dd-section{border-top:3px solid var(--line2);padding-top:44px;margin-top:8px}
+.dd-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.dd-head .swatch-lg{width:14px;height:14px;border-radius:4px}
+.dd-head h3{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.dd-meta{font-size:12.5px;color:var(--muted);margin-bottom:20px}
+.dd-stats{grid-template-columns:repeat(5,1fr);margin-bottom:16px}
+.dd-stat{padding:14px 16px}
+.dd-stat .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:6px}
+.dd-stat .v{font-family:'JetBrains Mono';font-weight:700;font-size:19px}
+.dd-body{grid-template-columns:1.2fr 1fr;gap:14px}
+.dd-note{background:var(--amber-soft);border:1px solid #EFD3AC;border-radius:10px;padding:12px 14px;font-size:12px;color:#7A501C;margin-bottom:16px;display:flex;gap:9px}
+
+footer{max-width:1220px;margin:40px auto 0;padding:26px 24px 60px;color:var(--muted);font-size:12px;line-height:1.7;border-top:1px solid var(--line)}
+footer b{color:var(--ink)}
+
+@media (max-width:860px){
+  .statgrid,.findgrid,.kpis,.two,.srgrid,.dd-body,.adjgrid,.topicgrid,.dd-stats{grid-template-columns:1fr}
+  nav{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="gnav">
+    <div class="gnav-inner">
+      <span class="glabel">agen.co</span>
+      <a href="overview.html">Overview</a>
+      <a href="Agen_Reddit_Marketing_Roadmap.html">Roadmap</a>
+      <a href="AI_Agent_Governance_Reddit_Competitive_Intelligence.html" class="active">Competitive Analysis</a>
+      <a href="AI_Agent_Security_Reddit_Market_Intelligence.html">Market Analysis</a>
+      <a href="agenco_Subreddit_Intelligence_Map.html">Subreddit Mapping</a>
+    </div>
+  </div>
+  <div class="bar">
+    <div class="brand"><span class="mark">AI</span> Agent Governance &amp; Security</div>
+    <span class="pill">Reddit Competitive Intelligence</span>
+    <nav id="nav">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#sov">Share of Voice</a>
+      <a href="#sentiment">Sentiment</a>
+      <a href="#crosscat">Cross-Category</a>
+      <a href="#adjacent">Adjacent Field</a>
+      <a href="#deepdives">Deep Dives</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <section id="overview" class="hero">
+    <div class="eyebrow">Competitive Intelligence Analysis <span class="n" id="daterange"></span></div>
+    <h2>How the <span class="hl">AI agent governance &amp; security</span> category is discussed on Reddit</h2>
+    <p class="sub">Six vendors — Microsoft Agent Governance, Noma Security, Operant AI, RunLayer, IBM watsonx, and WitnessAI — analyzed across every Reddit thread and comment that names them, after filtering out job listings, syndicated bot noise, and false-positive keyword collisions.</p>
+    <div class="grid statgrid" id="compcards"></div>
+    <div class="card scalebar" id="scalebar"></div>
+  </section>
+
+  <!-- LANDSCAPE / KEY FINDING -->
+  <section id="landscape">
+    <div class="eyebrow">Key Finding <span class="n">01</span></div>
+    <h2>This category barely talks about itself</h2>
+    <p class="sub">Unlike mature, high-volume SaaS categories, agent-governance &amp; security vendors generate very little organic Reddit debate. Most of what looks like "conversation" is syndicated press coverage, recruiting posts, or bot-run daily digests — not community opinion.</p>
+    <div class="grid findgrid">
+      <div class="card find-call">
+        <div class="bignum" id="pctSyndicated">—</div>
+        <h3>of analyzed threads carry zero net sentiment</h3>
+        <p id="findingCopy">Across 332 relevant threads and 2,584 comments, most brand mentions sit inside neutral, uncommented press coverage rather than genuine user reaction — engineers are only now starting to argue about this space in the open.</p>
+      </div>
+      <div class="card callout-list" id="findingList">
+        <h4>What the raw data actually shows</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHARE OF VOICE -->
+  <section id="sov">
+    <div class="eyebrow">Who is winning the conversation <span class="n">02</span></div>
+    <h2>Share of voice &amp; momentum</h2>
+    <p class="sub">Ranked by number of analyzed threads mentioning each vendor, with sentiment split, followed by monthly volume over time.</p>
+    <div class="grid kpis" id="kpis" style="margin-bottom:14px"></div>
+    <div class="card">
+      <div class="legend" style="padding:18px 22px 0">
+        <span><i style="background:var(--pos)"></i>Positive</span>
+        <span><i style="background:var(--neu)"></i>Neutral</span>
+        <span><i style="background:var(--neg)"></i>Negative</span>
+        <span style="margin-left:auto;color:var(--faint)">bar width = share of sentiment · count = analyzed threads</span>
+      </div>
+      <div class="toolwrap" id="sovbars"></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="trendwrap">
+        <h3 style="font-size:14.5px;font-weight:700;margin-bottom:2px">Monthly thread volume</h3>
+        <div class="ps" style="font-size:12px;color:var(--muted);margin-bottom:10px">Each vendor's analyzed Reddit threads, by month</div>
+        <div id="trendchart"></div>
+      </div>
+      <div class="trend-legend" id="trendlegend"></div>
+    </div>
+  </section>
+
+  <!-- SENTIMENT -->
+  <section id="sentiment">
+    <div class="eyebrow">Sentiment <span class="n">03</span></div>
+    <h2>How the community reacts, where it reacts at all</h2>
+    <p class="sub">Net sentiment = (positive − negative) share of scored mentions, using a domain-tuned lexicon scored in a tight window around each brand mention (not the whole comment) to avoid bleed from neighboring brands in roundup posts.</p>
+    <div class="grid two">
+      <div class="card panel">
+        <h3>Net sentiment by vendor</h3>
+        <div class="ps">Ranked most to least positive</div>
+        <div id="diverging"></div>
+      </div>
+      <div class="card panel">
+        <h3>Overall sentiment mix</h3>
+        <div class="ps" id="donutSub">All scored mentions across the category</div>
+        <div class="donutwrap"><svg id="donut" width="150" height="150" viewBox="0 0 150 150"></svg><div class="dleg" id="dleg"></div></div>
+      </div>
+    </div>
+    <div class="card panel" style="margin-top:14px">
+      <h3>Recurring pain points, by vendor</h3>
+      <div class="ps">Number of analyzed threads surfacing each theme — a domain-specific taxonomy (pricing, integration, false positives, performance overhead, maturity, docs/support, hype, policy accuracy)</div>
+      <div class="painwrap"><table class="paintbl" id="paintable"></table></div>
+    </div>
+  </section>
+
+  <!-- CROSS-CATEGORY -->
+  <section id="crosscat">
+    <div class="eyebrow">Cross-category view <span class="n">04</span></div>
+    <h2>What the whole category talks about</h2>
+    <p class="sub">Keywords, topics, and communities pooled across all six vendors' analyzed threads — the shared vocabulary of the space, brand names excluded.</p>
+    <div class="grid two">
+      <div class="card panel">
+        <h3>Most frequent keywords</h3>
+        <div class="ps">Across all analyzed threads &amp; comments, brand names and stopwords removed</div>
+        <div class="blist" id="combinedKw"></div>
+      </div>
+      <div class="card panel">
+        <h3>Most frequent two-word topics</h3>
+        <div class="ps">The concrete jobs and concepts buyers/engineers discuss</div>
+        <div class="blist" id="combinedTopics"></div>
+      </div>
+    </div>
+    <div class="card panel" style="margin-top:14px" id="crossoverWrap">
+      <h3>Crossover threads</h3>
+      <div class="ps">Threads that name two or more tracked vendors in the same conversation — direct head-to-head comparison moments</div>
+      <div id="crossoverList"></div>
+    </div>
+    <div class="grid srgrid" style="margin-top:14px">
+      <div class="card panel">
+        <h3>Where the category lives</h3>
+        <div class="ps">Top subreddits across all analyzed threads</div>
+        <div class="blist" id="combinedSubs"></div>
+      </div>
+      <div class="card panel">
+        <h3>Reading the subreddit mix</h3>
+        <div class="ps">What the community split implies</div>
+        <div id="subNotes" style="font-size:13px;color:var(--muted);line-height:1.7"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADJACENT FIELD -->
+  <section id="adjacent">
+    <div class="eyebrow">Bonus: adjacent landscape <span class="n">05</span></div>
+    <h2>The emerging field nobody asked us to track</h2>
+    <p class="sub">Sweeping the same corpus for other MCP/agent-security tools surfaced a wider emerging landscape — most visibly inside one r/mcp thread ("What are the hot startups building with MCP in 2026?") where over a dozen founders pitched their own tools.</p>
+    <div class="grid adjgrid" id="adjacentCards"></div>
+  </section>
+
+  <!-- DEEP DIVES -->
+  <section id="deepdives">
+    <div class="eyebrow">Per-vendor deep dive <span class="n">06</span></div>
+    <h2>Six vendors, one at a time</h2>
+    <p class="sub">Full breakdown for each tracked competitor: analyzed volume, sentiment, pain points, top threads, and representative quotes.</p>
+  </section>
+  <div id="deepdiveContainer"></div>
+
+</main>
+
+<footer id="methodology"></footer>
+
+<script id="data-blob" type="application/json">{"order": ["watsonx", "Witness AI", "Operant AI", "RunLayer", "Noma Security", "Microsoft Agent Governance"], "overview": {"total_raw_posts": 446, "total_analyzed_posts": 332, "total_excluded_posts": 114, "total_comments": 2584, "total_mentions": 1202, "date_min": "2021-02-18", "date_max": "2026-07-05", "n_competitors": 6, "n_adjacent": 15}, "comp": {"Microsoft Agent Governance": {"display_name": "Microsoft Agent Governance", "color": "#5b6ee1", "raw_posts": 10, "analyzed_posts": 10, "excluded_posts": 0, "excluded_job_listings": 0, "excluded_job_roundup": 0, "excluded_irrelevant": 0, "total_comments": 32, "total_mentions": 17, "pos": 2, "neu": 14, "neg": 1, "net_sentiment": 5.9, "pos_pct": 11.8, "neu_pct": 82.4, "neg_pct": 5.9, "top_subreddits": [["AI_Agents", 2], ["AIDeveloperNews", 1], ["AI_Governance", 1], ["ArtificialInteligence", 1], ["ClaudeCode", 1], ["LangChain", 1], ["LocalLLaMA", 1], ["LovingAIAgents", 1], ["LovingOpenSourceAI", 1]], "months": [["2026-03", 2], ["2026-04", 3], ["2026-05", 2], ["2026-06", 3]], "pain_points": [["Integration complexity", 7], ["Pricing / cost", 3], ["Performance overhead", 3], ["Documentation / support", 2], ["Coverage / false positives", 1], ["Maturity / enterprise readiness", 1]], "top_keywords": [["agents", 37], ["tool", 34], ["policy", 33], ["open", 23], ["runtime", 23], ["before", 20], ["model", 19], ["execution", 18], ["call", 17], ["drift", 17], ["source", 16], ["action", 16], ["tools", 14], ["trust", 14], ["envpod", 14], ["autonomous", 13], ["free", 12], ["zero", 12], ["time", 11], ["agentic", 11]], "top_topics": [["open source", 15], ["tool call", 14], ["policy enforcement", 8], ["zero trust", 8], ["free open", 7], ["trust identity", 6], ["semantic drift", 6], ["runtime policy", 5], ["behavioral drift", 5], ["covers owasp", 5], ["owasp agentic", 5], ["sub millisecond", 4], ["enforcement zero", 4], ["prompt injection", 4], ["before tool", 4], ["tool calls", 4]], "quotes_pos": [[1, "\"Microsoft Agent Governance Toolkit \u2014 Policy enforcement, zero-trust identity, execution sandboxing, and reliability engineering for autonomous AI agents.", "https://www.reddit.com/r/LovingAIAgents/comments/1u0ckj3/microsoft_agent_governance_toolkit_policy/"], [1, "\"Microsoft Agent Governance Toolkit \u2014 Policy enforcement, zero-trust identity, execution sandboxing, and reliability engineering for autonomous AI agents.", "https://www.reddit.com/r/LovingOpenSourceAI/comments/1u0cjg2/microsoft_agent_governance_toolkit_policy/"]], "quotes_neg": [[-1, "On it feeling disjointed from the rest of the MS stack: I read AGT more like a pluggable policy engine than a full governance solution.", "https://www.reddit.com/r/AI_Governance/comments/1szvbhf/microsoft_ai_governance_toolkit/"]], "top_posts": [{"title": "Best tools for monitoring and auditing autonomous AI agent behavior at runtime, what's actually working in prod?", "subreddit": "AI_Agents", "url": "https://www.reddit.com/r/AI_Agents/comments/1udelyh/best_tools_for_monitoring_and_auditing_autonomous/", "votes": 9, "comments": 25, "date": "2026-06-23"}, {"title": "\"Microsoft Agent Governance Toolkit \u2014 Policy enforcement, zero-trust identity, execution sandboxing, and reliability engineering for autonomous AI agents. Covers 10/10 OWASP Agentic Top 10.\" \u27a1\ufe0f agent control beyond prompts?", "subreddit": "LovingOpenSourceAI", "url": "https://www.reddit.com/r/LovingOpenSourceAI/comments/1u0cjg2/microsoft_agent_governance_toolkit_policy/", "votes": 13, "comments": 0, "date": "2026-06-08"}, {"title": "Free session next month on governed AI agents with the maintainer of Microsoft AGT", "subreddit": "AI_Agents", "url": "https://www.reddit.com/r/AI_Agents/comments/1srpee1/free_session_next_month_on_governed_ai_agents/", "votes": 5, "comments": 6, "date": "2026-04-21"}, {"title": "Title: Microsoft's agent governance toolkit \u2014 enforcement is weaker than it looks", "subreddit": "LangChain", "url": "https://www.reddit.com/r/LangChain/comments/1rtmp1g/title_microsofts_agent_governance_toolkit/", "votes": 4, "comments": 6, "date": "2026-03-14"}, {"title": "Execution Control Gap for Autonomous Ai", "subreddit": "ArtificialInteligence", "url": "https://www.reddit.com/r/ArtificialInteligence/comments/1t4zp34/execution_control_gap_for_autonomous_ai/", "votes": 1, "comments": 6, "date": "2026-05-06"}, {"title": "Microsoft AI Governance Toolkit", "subreddit": "AI_Governance", "url": "https://www.reddit.com/r/AI_Governance/comments/1szvbhf/microsoft_ai_governance_toolkit/", "votes": 5, "comments": 1, "date": "2026-04-30"}, {"title": "I've been building an AI agent governance runtime in Rust. Yesterday NVIDIA announced the same thesis at GTC. Here's what they got right, what's still missing, and what I learned building this alone.", "subreddit": "LocalLLaMA", "url": "https://www.reddit.com/r/LocalLLaMA/comments/1rwwjch/ive_been_building_an_ai_agent_governance_runtime/", "votes": 0, "comments": 5, "date": "2026-03-18"}, {"title": "Asking Claude to examine why it hallucinated made it hallucinate even more", "subreddit": "ClaudeCode", "url": "https://www.reddit.com/r/ClaudeCode/comments/1sgjzmj/asking_claude_to_examine_why_it_hallucinated_made/", "votes": 2, "comments": 2, "date": "2026-04-09"}, {"title": "\"Microsoft Agent Governance Toolkit \u2014 Policy enforcement, zero-trust identity, execution sandboxing, and reliability engineering for autonomous AI agents. Covers 10/10 OWASP Agentic Top 10.\" \u27a1\ufe0f when agents need guardrails :P", "subreddit": "LovingAIAgents", "url": "https://www.reddit.com/r/LovingAIAgents/comments/1u0ckj3/microsoft_agent_governance_toolkit_policy/", "votes": 4, "comments": 0, "date": "2026-06-08"}, {"title": "15 New AI Dev tools, models &amp; agents Releases\u2014 Best drops (May 1 2026)", "subreddit": "AIDeveloperNews", "url": "https://www.reddit.com/r/AIDeveloperNews/comments/1t17anp/15_new_ai_dev_tools_models_agents_releases_best/", "votes": 3, "comments": 0, "date": "2026-05-01"}], "date_min": "2026-03-14", "date_max": "2026-06-23", "unique_stories": 10, "syndicated_dupe_stories": 0}, "Noma Security": {"display_name": "Noma Security", "color": "#e0663f", "raw_posts": 23, "analyzed_posts": 23, "excluded_posts": 0, "excluded_job_listings": 0, "excluded_job_roundup": 0, "excluded_irrelevant": 0, "total_comments": 38, "total_mentions": 33, "pos": 2, "neu": 24, "neg": 7, "net_sentiment": -15.2, "pos_pct": 6.1, "neu_pct": 72.7, "neg_pct": 21.2, "top_subreddits": [["TechNadu", 6], ["Build_AI_Agents", 5], ["pwnhub", 4], ["cybersecurity", 3], ["Seneweb", 2], ["salesforce", 1], ["tellerstech", 1], ["washingtondc", 1]], "months": [["2025-07", 2], ["2025-08", 5], ["2025-09", 5], ["2025-10", 3], ["2025-12", 2], ["2026-02", 2], ["2026-03", 1], ["2026-04", 3]], "pain_points": [["Integration complexity", 11], ["Documentation / support", 5], ["Performance overhead", 3], ["Data / policy accuracy", 3], ["Coverage / false positives", 3], ["Maturity / enterprise readiness", 2], ["Pricing / cost", 1]], "top_keywords": [["agents", 68], ["data", 59], ["injection", 35], ["prompt", 33], ["systems", 31], ["vulnerability", 27], ["enterprise", 23], ["mcp", 22], ["user", 21], ["real", 20], ["tools", 19], ["vulnerabilities", 18], ["model", 17], ["autonomous", 17], ["building", 17], ["first", 17], ["agentic", 16], ["who", 16], ["based", 16], ["research", 15]], "top_topics": [["prompt injection", 25], ["indirect prompt", 10], ["daily news", 6], ["real time", 6], ["diana kelley", 6], ["lay off", 6], ["data exfiltration", 6], ["mcp server", 6], ["until tomorrow", 5], ["tomorrow happy", 5], ["happy building", 5], ["raises million", 5], ["sensitive data", 5], ["salesforce agentforce", 5], ["malicious instructions", 5], ["file write", 4]], "quotes_pos": [[1, "Diana Kelley (CISO at Noma Security) on Indirect Prompt Injection, Shadow AI, and Why Trust Grows When Success Is Shared", "https://www.reddit.com/r/TechNadu/comments/1o922z8/diana_kelley_ciso_at_noma_security_on_indirect/"], [1, "In an insightful interview with TechNadu, Diana Kelley, CISO at Noma Security, discussed the growing threat of *indirect prompt injection* \\- where attacker-controlled text can poison AI models or even turn simple documents into covert attack instructions.", "https://www.reddit.com/r/TechNadu/comments/1o922z8/diana_kelley_ciso_at_noma_security_on_indirect/"]], "quotes_neg": [[-2, "The recently identified GeminiJack vulnerability, discovered by cybersecurity firm Noma Security, poses a significant risk to users of Google's Gemini Enterprise and Vertex AI Search tools.", "https://www.reddit.com/r/pwnhub/comments/1pie217/googles_geminijack_flaw_exposes_users_to_serious/"], [-2, "The DockerDash vulnerability, discovered by cybersecurity firm Noma Security, presents a critical risk within Docker's Ask Gordon AI assistant due to the way the MCP Gateway handles metadata instructions.", "https://www.reddit.com/r/pwnhub/comments/1qvuk89/dockerdash_vulnerability_in_ai_assistant_poses/"], [-1, "Noma Security researchers disclosed a **critical vulnerability chain** in Salesforce Agentforce, dubbed *ForcedLeak*.", "https://www.reddit.com/r/TechNadu/comments/1nqueqw/are_ai_agents_becoming_the_new_weakest_link_in/"], [-1, "The research team from Noma Security discovered the first-ever critical agentic vulnerability in Salesforce Agentforce.", "https://www.reddit.com/r/cybersecurity/comments/1ns8uoa/critical_agentic_vulnerability_forcedleak_couldve/"], [-1, "Noma Security, the AI security firm that reported the issue, described the flaw as an architectural weakness in how enterprise AI systems interpret and manage information, highlighting the potential risks associated with AI in business settings.", "https://www.reddit.com/r/pwnhub/comments/1pj742p/google_patches_critical_geminijack_vulnerability/"], [-1, "https://noma.security/blog/forcedleak-agent-risks-exposed-in-salesforce-agentforce/", "https://www.reddit.com/r/salesforce/comments/1nudqgj/salesforce_patches_critical_agentforce_leak/"]], "top_posts": [{"title": "Salesforce patches critical Agentforce leak", "subreddit": "salesforce", "url": "https://www.reddit.com/r/salesforce/comments/1nudqgj/salesforce_patches_critical_agentforce_leak/", "votes": 29, "comments": 15, "date": "2025-09-30"}, {"title": "AVA Noma/Slate Noma Security Issues", "subreddit": "washingtondc", "url": "https://www.reddit.com/r/washingtondc/comments/1o51k2j/ava_nomaslate_noma_security_issues/", "votes": 10, "comments": 9, "date": "2025-10-12"}, {"title": "We ran live prompt injection tests against Claude Code's multi-agent system. Here's what we found \u2014 and why the same gaps exist in every major framework.", "subreddit": "cybersecurity", "url": "https://www.reddit.com/r/cybersecurity/comments/1s8uses/we_ran_live_prompt_injection_tests_against_claude/", "votes": 3, "comments": 8, "date": "2026-03-31"}, {"title": "Are AI agents becoming the new weakest link in enterprise security?  Salesforce \u201cForcedLeak\u201d CVSS 9.4 Vulnerability Exposed CRM Data via AI Prompt Injection.", "subreddit": "TechNadu", "url": "https://www.reddit.com/r/TechNadu/comments/1nqueqw/are_ai_agents_becoming_the_new_weakest_link_in/", "votes": 6, "comments": 4, "date": "2025-09-26"}, {"title": "Ask the Experts: If AI finds vulnerabilities faster than we can fix them, what breaks first?", "subreddit": "TechNadu", "url": "https://www.reddit.com/r/TechNadu/comments/1sqk2g9/ask_the_experts_if_ai_finds_vulnerabilities/", "votes": 4, "comments": 6, "date": "2026-04-20"}, {"title": "Top cybersecurity stories for the week of 09-22-25 to 09-26-25", "subreddit": "cybersecurity", "url": "https://www.reddit.com/r/cybersecurity/comments/1nr3ep7/top_cybersecurity_stories_for_the_week_of_092225/", "votes": 4, "comments": 2, "date": "2025-09-26"}, {"title": "Diana Kelley (CISO at Noma Security) on Indirect Prompt Injection, Shadow AI, and Why Trust Grows When Success Is Shared", "subreddit": "TechNadu", "url": "https://www.reddit.com/r/TechNadu/comments/1o922z8/diana_kelley_ciso_at_noma_security_on_indirect/", "votes": 4, "comments": 1, "date": "2025-10-17"}, {"title": "Ask the Experts: If AI finds vulnerabilities faster than we can fix them, what breaks first?", "subreddit": "pwnhub", "url": "https://www.reddit.com/r/pwnhub/comments/1sqk320/ask_the_experts_if_ai_finds_vulnerabilities/", "votes": 3, "comments": 2, "date": "2026-04-20"}, {"title": "Critical agentic vulnerability (ForcedLeak) could've led to Salesforce Agentforce CRM data exfiltration via chained AI agent exploit including prompt injection", "subreddit": "cybersecurity", "url": "https://www.reddit.com/r/cybersecurity/comments/1ns8uoa/critical_agentic_vulnerability_forcedleak_couldve/", "votes": 3, "comments": 1, "date": "2025-09-27"}, {"title": "Ship It Weekly Podcast: Azure VM Control Plane Outage, GitHub Agent HQ (Claude + Codex), Claude Opus 4.6, Gemini CLI, MCP", "subreddit": "tellerstech", "url": "https://www.reddit.com/r/tellerstech/comments/1qxvuyf/ship_it_weekly_podcast_azure_vm_control_plane/", "votes": 2, "comments": 2, "date": "2026-02-06"}], "date_min": "2025-07-31", "date_max": "2026-04-24", "unique_stories": 22, "syndicated_dupe_stories": 1}, "Operant AI": {"display_name": "Operant AI", "color": "#2fa88a", "raw_posts": 29, "analyzed_posts": 28, "excluded_posts": 1, "excluded_job_listings": 0, "excluded_job_roundup": 1, "excluded_irrelevant": 0, "total_comments": 3, "total_mentions": 130, "pos": 0, "neu": 130, "neg": 0, "net_sentiment": 0.0, "pos_pct": 0.0, "neu_pct": 100.0, "neg_pct": 0.0, "top_subreddits": [["ITChannelPro", 10], ["DutchITChannel", 5], ["MSP2DAY", 5], ["thestallionvibe", 4], ["ArtificialInteligence", 1], ["Build_AI_Agents", 1], ["NowInCyber", 1], ["cybersecurity", 1]], "months": [["2023-11", 1], ["2025-03", 4], ["2026-02", 3], ["2026-03", 20]], "pain_points": [["Integration complexity", 13], ["Pricing / cost", 7], ["Coverage / false positives", 2], ["Documentation / support", 1], ["Data / policy accuracy", 1]], "top_keywords": [["partners", 68], ["klanten", 50], ["nieuwe", 47], ["programma", 43], ["partnerprogramma", 34], ["data", 33], ["beveiliging", 31], ["zoals", 31], ["platform", 30], ["managed", 30], ["staat", 29], ["modellen", 28], ["service", 26], ["mssp's", 26], ["geavanceerde", 26], ["providers", 25], ["msp's", 25], ["program", 25], ["stelt", 24], ["organisaties", 24]], "top_topics": [["managed service", 25], ["service providers", 25], ["kunstmatige intelligentie", 16], ["channel partners", 14], ["partners staat", 14], ["msp's mssp's", 13], ["large language", 13], ["language models", 13], ["nieuw partnerprogramma", 12], ["providers msp's", 12], ["traditionele cybersecurity", 12], ["cybersecurity oplossingen", 12], ["oplossingen vaak", 12], ["mssp's value", 12], ["value added", 12], ["added resellers", 12]], "quotes_pos": [], "quotes_neg": [], "top_posts": [{"title": "Open Source Security-focused Chaos Engineering for DevSecOps Teams", "subreddit": "cybersecurity", "url": "https://www.reddit.com/r/cybersecurity/comments/17n1gou/open_source_securityfocused_chaos_engineering_for/", "votes": 3, "comments": 4, "date": "2023-11-03"}, {"title": "Operant AI targets \u2018shadow\u2019 AI agents with real-time security platform", "subreddit": "ArtificialInteligence", "url": "https://www.reddit.com/r/ArtificialInteligence/comments/1r0ap1w/operant_ai_targets_shadow_ai_agents_with_realtime/", "votes": 1, "comments": 2, "date": "2026-02-09"}, {"title": "AI Agent Daily News: 2026-02-07", "subreddit": "Build_AI_Agents", "url": "https://www.reddit.com/r/Build_AI_Agents/comments/1qyqspz/ai_agent_daily_news_20260207/", "votes": 2, "comments": 0, "date": "2026-02-07"}, {"title": "Operant AI debuts Agent Protector to secure autonomous AI agents at scale", "subreddit": "NowInCyber", "url": "https://www.reddit.com/r/NowInCyber/comments/1qx9jzq/operant_ai_debuts_agent_protector_to_secure/", "votes": 1, "comments": 1, "date": "2026-02-06"}, {"title": "Operant AI Lanceert Nieuw Partnerprogramma Gericht op AI-Beveiliging", "subreddit": "DutchITChannel", "url": "https://www.reddit.com/r/DutchITChannel/comments/1rsq23h/operant_ai_lanceert_nieuw_partnerprogramma/", "votes": 1, "comments": 0, "date": "2026-03-13"}, {"title": "Operant AI Lanceert Partnerprogramma voor AI Security", "subreddit": "DutchITChannel", "url": "https://www.reddit.com/r/DutchITChannel/comments/1rueadc/operant_ai_lanceert_partnerprogramma_voor_ai/", "votes": 1, "comments": 0, "date": "2026-03-15"}, {"title": "Operant AI Lanceert Partnerprogramma Gericht op AI Security", "subreddit": "DutchITChannel", "url": "https://www.reddit.com/r/DutchITChannel/comments/1rw6a8z/operant_ai_lanceert_partnerprogramma_gericht_op/", "votes": 1, "comments": 0, "date": "2026-03-17"}, {"title": "Het Operant AI Security Program: Een Nieuwe Standaard in AI-Beveiliging", "subreddit": "DutchITChannel", "url": "https://www.reddit.com/r/DutchITChannel/comments/1rxxn47/het_operant_ai_security_program_een_nieuwe/", "votes": 1, "comments": 0, "date": "2026-03-19"}, {"title": "Operant AI lanceert security program: De link met FinOps en cloud cost management", "subreddit": "DutchITChannel", "url": "https://www.reddit.com/r/DutchITChannel/comments/1rzosfj/operant_ai_lanceert_security_program_de_link_met/", "votes": 1, "comments": 0, "date": "2026-03-21"}, {"title": "Operant AI Lanceert Nieuw Partnerprogramma Gericht op AI-Beveiliging", "subreddit": "ITChannelPro", "url": "https://www.reddit.com/r/ITChannelPro/comments/1rsq23q/operant_ai_lanceert_nieuw_partnerprogramma/", "votes": 1, "comments": 0, "date": "2026-03-13"}], "date_min": "2023-11-03", "date_max": "2026-03-21", "unique_stories": 13, "syndicated_dupe_stories": 5}, "RunLayer": {"display_name": "RunLayer", "color": "#c9963f", "raw_posts": 23, "analyzed_posts": 22, "excluded_posts": 1, "excluded_job_listings": 0, "excluded_job_roundup": 1, "excluded_irrelevant": 0, "total_comments": 19, "total_mentions": 123, "pos": 3, "neu": 114, "neg": 6, "net_sentiment": -2.4, "pos_pct": 2.4, "neu_pct": 92.7, "neg_pct": 4.9, "top_subreddits": [["u_softtechhubus", 5], ["ITChannelPro", 4], ["DutchITChannel", 2], ["MSP2DAY", 2], ["AI_Governance", 1], ["BayAreaHomes", 1], ["Build_AI_Agents", 1], ["actutech", 1], ["agenticAI", 1], ["jobboardsearch", 1]], "months": [["2025-11", 11], ["2025-12", 1], ["2026-01", 1], ["2026-02", 3], ["2026-03", 3], ["2026-06", 1], ["2026-07", 2]], "pain_points": [["Integration complexity", 11], ["Performance overhead", 8], ["Pricing / cost", 7], ["Documentation / support", 6], ["Coverage / false positives", 3], ["Data / policy accuracy", 3], ["Maturity / enterprise readiness", 2]], "top_keywords": [["cloud", 77], ["model", 71], ["tools", 66], ["platform", 53], ["data", 50], ["agents", 49], ["openclaw", 46], ["mcp", 45], ["building", 44], ["real", 43], ["companies", 41], ["company", 40], ["memory", 39], ["access", 38], ["code", 38], ["multi", 36], ["time", 35], ["every", 34], ["problem", 34], ["models", 33]], "top_topics": [["multi cloud", 31], ["open source", 14], ["attention matching", 13], ["cloud platform", 12], ["cloud platforms", 12], ["claude code", 12], ["phi reasoning", 10], ["controle kosten", 9], ["finops teams", 9], ["every single", 9], ["real time", 8], ["haalt miljoen", 8], ["miljoen controle", 8], ["controle multi", 8], ["platform mcp", 8], ["mcp adoptie", 8]], "quotes_pos": [[1, "The article mentions that Runlayer has already secured several high-growth companies and suggests that the future of AI in the workplace will focus on governance rather than outright bans on powerful tools.", "https://www.reddit.com/r/BayAreaHomes/comments/1rabym0/runlayer_is_now_offering_secure_openclaw_agentic/"], [1, "Runlayer aims to facilitate the safe integration of AI technologies into enterprise environments through robust security protocols.", "https://www.reddit.com/r/pwnhub/comments/1p315ka/runlayer_launches_with_11_million_to_secure_ai_in/"], [1, "Berman made a distinction in his interview that is worth highlighting because it changes how enterprise security teams should think about what Runlayer is.", "https://www.reddit.com/user/softtechhubus/comments/1rf7jdh/how_runlayer_is_trying_to_stop_ai_agents_from/"]], "quotes_neg": [[-1, "De kern van het probleem dat RunLayer aanpakt, ligt in de frictie tussen de wens voor snelle softwareontwikkeling en de realiteit van complex cloud-infrastructuurbeheer.", "https://www.reddit.com/r/DutchITChannel/comments/1p15xww/runlayer_haalt_11_miljoen_op_voor_controle_over/"], [-1, "De kern van het probleem dat RunLayer aanpakt, ligt in de frictie tussen de wens voor snelle softwareontwikkeling en de realiteit van complex cloud-infrastructuurbeheer.", "https://www.reddit.com/r/ITChannelPro/comments/1p15xx8/runlayer_haalt_11_miljoen_op_voor_controle_over/"], [-1, "De kern van het probleem dat RunLayer aanpakt, ligt in de frictie tussen de wens voor snelle softwareontwikkeling en de realiteit van complex cloud-infrastructuurbeheer.", "https://www.reddit.com/r/ITChannelPro/comments/1p15xwq/runlayer_haalt_11_miljoen_op_voor_controle_over/"], [-1, "De kern van het probleem dat RunLayer aanpakt, ligt in de frictie tussen de wens voor snelle softwareontwikkeling en de realiteit van complex cloud-infrastructuurbeheer.", "https://www.reddit.com/r/MSP2DAY/comments/1p15xwo/runlayer_haalt_11_miljoen_op_voor_controle_over/"], [-1, "Runlayer's research identifies three categories that are most commonly at risk:", "https://www.reddit.com/user/softtechhubus/comments/1rf7jdh/how_runlayer_is_trying_to_stop_ai_agents_from/"], [-1, "That gap between capability and safe deployment is exactly where companies like Runlayer live.", "https://www.reddit.com/user/softtechhubus/comments/1rf7jdh/how_runlayer_is_trying_to_stop_ai_agents_from/"]], "top_posts": [{"title": "What are the hot startups building with MCP in 2026?", "subreddit": "mcp", "url": "https://www.reddit.com/r/mcp/comments/1q6hf0a/what_are_the_hot_startups_building_with_mcp_in/", "votes": 8, "comments": 21, "date": "2026-01-07"}, {"title": "6 weeks, $200M+, every security vendor jumped in \u2014 but are enterprises actually ready for agent identity governance?", "subreddit": "AI_Governance", "url": "https://www.reddit.com/r/AI_Governance/comments/1uns0ej/6_weeks_200m_every_security_vendor_jumped_in_but/", "votes": 3, "comments": 1, "date": "2026-07-05"}, {"title": "Runlayer Launches with $11 Million to Secure AI in Enterprises", "subreddit": "pwnhub", "url": "https://www.reddit.com/r/pwnhub/comments/1p315ka/runlayer_launches_with_11_million_to_secure_ai_in/", "votes": 3, "comments": 1, "date": "2025-11-21"}, {"title": "AI Agent Daily News: 2025-11-18", "subreddit": "Build_AI_Agents", "url": "https://www.reddit.com/r/Build_AI_Agents/comments/1p0pdp5/ai_agent_daily_news_20251118/", "votes": 3, "comments": 0, "date": "2025-11-18"}, {"title": "6 weeks, $200M+, every security vendor jumped in \u2014 but are enterprises actually ready for agent identity governance?", "subreddit": "agenticAI", "url": "https://www.reddit.com/r/agenticAI/comments/1uo225j/6_weeks_200m_every_security_vendor_jumped_in_but/", "votes": 1, "comments": 1, "date": "2026-07-05"}, {"title": "How Runlayer Is Trying to Stop AI Agents From Becoming Corporate Security Nightmares", "subreddit": "u_softtechhubus", "url": "https://www.reddit.com/user/softtechhubus/comments/1rf7jdh/how_runlayer_is_trying_to_stop_ai_agents_from/", "votes": 1, "comments": 1, "date": "2026-02-26"}, {"title": "Runlayer is now offering secure OpenClaw agentic capabilities for large enterprises", "subreddit": "BayAreaHomes", "url": "https://www.reddit.com/r/BayAreaHomes/comments/1rabym0/runlayer_is_now_offering_secure_openclaw_agentic/", "votes": 1, "comments": 0, "date": "2026-02-21"}, {"title": "RunLayer haalt $11 miljoen op voor controle over Multi-Cloud Platform (MCP) adoptie", "subreddit": "DutchITChannel", "url": "https://www.reddit.com/r/DutchITChannel/comments/1p092su/runlayer_haalt_11_miljoen_op_voor_controle_over/", "votes": 1, "comments": 0, "date": "2025-11-18"}, {"title": "RunLayer Haalt $11 Miljoen Op voor Controle over Multi-Cloud Platform Adoptie", "subreddit": "DutchITChannel", "url": "https://www.reddit.com/r/DutchITChannel/comments/1p15xww/runlayer_haalt_11_miljoen_op_voor_controle_over/", "votes": 1, "comments": 0, "date": "2025-11-19"}, {"title": "RunLayer haalt $11 miljoen op voor controle over Multi-Cloud Platform (MCP) adoptie", "subreddit": "ITChannelPro", "url": "https://www.reddit.com/r/ITChannelPro/comments/1p092t3/runlayer_haalt_11_miljoen_op_voor_controle_over/", "votes": 1, "comments": 0, "date": "2025-11-18"}], "date_min": "2025-11-18", "date_max": "2026-07-05", "unique_stories": 15, "syndicated_dupe_stories": 3}, "watsonx": {"display_name": "IBM watsonx", "color": "#3a6ea5", "raw_posts": 238, "analyzed_posts": 237, "excluded_posts": 1, "excluded_job_listings": 0, "excluded_job_roundup": 0, "excluded_irrelevant": 1, "total_comments": 2489, "total_mentions": 872, "pos": 62, "neu": 777, "neg": 33, "net_sentiment": 3.3, "pos_pct": 7.1, "neu_pct": 89.1, "neg_pct": 3.8, "top_subreddits": [["IBM", 64], ["u_ibm", 10], ["ibmstock", 9], ["DVLT", 6], ["ITChannelPro", 6], ["BANDOFBROTHERSOFSRNE", 4], ["FutureTechFinds", 4], ["AI_Agents", 3], ["DutchITChannel", 3], ["IBMi", 3]], "months": [["2021-02", 1], ["2023-05", 4], ["2023-06", 2], ["2023-08", 5], ["2023-09", 1], ["2023-11", 4], ["2023-12", 1], ["2024-01", 5], ["2024-03", 3], ["2024-04", 4], ["2024-05", 3], ["2024-06", 3], ["2024-07", 10], ["2024-08", 4], ["2024-09", 5], ["2024-10", 6], ["2024-11", 6], ["2024-12", 5], ["2025-01", 4], ["2025-02", 6], ["2025-03", 2], ["2025-04", 8], ["2025-05", 15], ["2025-06", 8], ["2025-07", 15], ["2025-08", 5], ["2025-09", 21], ["2025-10", 15], ["2025-11", 5], ["2025-12", 7], ["2026-01", 4], ["2026-02", 20], ["2026-03", 12], ["2026-04", 6], ["2026-05", 3], ["2026-06", 6], ["2026-07", 3]], "pain_points": [["Integration complexity", 107], ["Pricing / cost", 74], ["Documentation / support", 46], ["Performance overhead", 29], ["Vendor trust / hype", 24], ["Coverage / false positives", 23], ["Data / policy accuracy", 15], ["Maturity / enterprise readiness", 13]], "top_keywords": [["data", 522], ["code", 376], ["work", 330], ["time", 290], ["company", 252], ["people", 243], ["real", 238], ["business", 235], ["cloud", 233], ["agents", 224], ["good", 210], ["models", 208], ["years", 199], ["platform", 195], ["enterprise", 193], ["who", 193], ["because", 192], ["know", 184], ["need", 184], ["software", 180]], "top_topics": [["code assistant", 73], ["real time", 49], ["open source", 48], ["real world", 48], ["red hat", 40], ["years ago", 40], ["project vault", 38], ["partner plus", 35], ["plus programma", 28], ["quantum computing", 27], ["long term", 26], ["supply chain", 25], ["hybrid cloud", 25], ["last year", 23], ["artificial intelligence", 22], ["granite models", 22]], "quotes_pos": [[2, "it\u2019s because it just sucks. plain and simple. we are offering open source LLMs that other companies provide which all fall behind the latest technological developments such as larger context windows, better embeddings, etc. we claim we offer better pricing for certain models like", "https://www.reddit.com/r/IBM/comments/1bnbo77/watsonx_fortunes_in_2024/"], [2, "it\u2019s because it just sucks. plain and simple. we are offering open source LLMs that other companies provide which all fall behind the latest technological developments such as larger context windows, better embeddings, etc. we claim we offer better pricing for certain models like", "https://www.reddit.com/r/IBM/comments/1bnbo77/watsonx_fortunes_in_2024/"], [2, "Is AI Finally Useful for IBM i Developers? watsonx Code Assistant Looks Promising", "https://www.reddit.com/r/IBMi/comments/1m5pxq6/is_ai_finally_useful_for_ibm_i_developers_watsonx/"], [2, "[Watsonx](https://www.ibm.com/watsonx?utm_medium=OSocial&amp;utm_source=Reddit&amp;utm_content=WACWW&amp;utm_id=PSocialwatsonxMegathread20240307) is an enterprise-ready AI and data platform, with a set of AI assistants, designed to help you scale and accelerate the impact of AI w", "https://www.reddit.com/user/ibm/comments/1bc9rvf/guide_getting_the_most_out_of_gen_ai_for_business/"], [2, "[Watsonx](https://www.ibm.com/watsonx?utm_medium=OSocial&amp;utm_source=Reddit&amp;utm_content=WACWW&amp;utm_id=PSocialwatsonxMegathread20240307) is an enterprise-ready AI and data platform, with a set of AI assistants, designed to help you scale and accelerate the impact of AI w", "https://www.reddit.com/user/ibm/comments/1bc9rvf/guide_getting_the_most_out_of_gen_ai_for_business/"], [1, "I have used Watsonx Classic before, and while there is some promising features in the new version, it seems it also doesn't have the depth of control I used to have with the other version.", "https://www.reddit.com/r/Chatbots/comments/1gezp4m/ibm_watsonx_questions/"]], "quotes_neg": [[-3, "( yes, from my limited experience of watsonx, it\u2019s pretty limited and mediocre.", "https://www.reddit.com/r/IBM/comments/1bond4f/i_cannot_do_this_anymore/"], [-2, "I'm unclear on whether your inquiry concerns the *product success* or the experience of *working on the watsonx team.*", "https://www.reddit.com/r/IBM/comments/1ifmuok/folks_let_me_know_your_views_faults_on_watsonx/"], [-2, "We\u2019ve seen a lot of noise around watsonx.governance lately AI lifecycle management, model risk, audit trails, bias monitoring, etc.", "https://www.reddit.com/r/IBM/comments/1m77zus/anyone_using_watsonxgovernance_in_real_workflows/"], [-2, "We\u2019ve been exploring watsonx.governance as part of our AI model risk management strategy, especially for compliance-heavy use cases but it's hard to tell how much of the adoption is real vs. marketing.", "https://www.reddit.com/r/IBM/comments/1met9s4/is_anyone_actually_using_ibm_watsonxgovernance_in/"], [-2, "A lower barrier to entry for getting started is with watsonx on IBM Cloud, which alleviates the concern for expensive upfront infrastructure costs.", "https://www.reddit.com/user/ibm/comments/1cz1lxe/hi_reddit_im_edward_calvesbert_vp_product/"], [-1, "Watsonx.ai can facilitate various tasks such as drafting job descriptions, classifying customer complaints, summarizing complex regulatory documents, and extracting key business information.", "https://www.reddit.com/r/FutureTechFinds/comments/1iykm2f/watsonxai_by_ibm_tool_for_content/"]], "top_posts": [{"title": "Why does ESPN fantasy continue to push the useless IBM WatsonX tool?", "subreddit": "fantasyfootball", "url": "https://www.reddit.com/r/fantasyfootball/comments/1gvqruh/why_does_espn_fantasy_continue_to_push_the/", "votes": 963, "comments": 188, "date": "2024-11-20"}, {"title": "IBM sinks as Anthropic positions Claude Code as the ideal tool for code modernization", "subreddit": "stocks", "url": "https://www.reddit.com/r/stocks/comments/1rcte79/ibm_sinks_as_anthropic_positions_claude_code_as/", "votes": 923, "comments": 182, "date": "2026-02-23"}, {"title": "What are the real challenges of automating with AI agents?", "subreddit": "u_ibm", "url": "https://www.reddit.com/user/ibm/comments/1pii4tg/what_are_the_real_challenges_of_automating_with/", "votes": 907, "comments": 121, "date": "2025-12-09"}, {"title": "[GUIDE]: How IBM tech keeps 14M+ fans connected at the US Open", "subreddit": "u_ibm", "url": "https://www.reddit.com/user/ibm/comments/1ncvr22/guide_how_ibm_tech_keeps_14m_fans_connected_at/", "votes": 847, "comments": 81, "date": "2025-09-09"}, {"title": "Why are any of us still here? IBM is dying and we know it", "subreddit": "IBM", "url": "https://www.reddit.com/r/IBM/comments/1fqt826/why_are_any_of_us_still_here_ibm_is_dying_and_we/", "votes": 569, "comments": 288, "date": "2024-09-27"}, {"title": "Hi Reddit! I\u2019m Suzanne Livingston, VP of IBM watsonx Orchestrate Agent Domains. Everyone\u2019s talking about AI agents. But what\u2019s real, what\u2019s hype, and how will they actually change how we work? Let\u2019s cut through the noise together. Join me on 6/18 at 3 PM ET, and I\u2019ll give it to you straight. AMA!", "subreddit": "u_ibm", "url": "https://www.reddit.com/user/ibm/comments/1lakovb/hi_reddit_im_suzanne_livingston_vp_of_ibm_watsonx/", "votes": 308, "comments": 182, "date": "2025-06-13"}, {"title": "IBM acquired Confluent for $11Billion, thoughts on this?", "subreddit": "developersIndia", "url": "https://www.reddit.com/r/developersIndia/comments/1phyx6t/ibm_acquired_confluent_for_11billion_thoughts_on/", "votes": 440, "comments": 49, "date": "2025-12-09"}, {"title": "AI helping to code \u2013 excited about its potential, confused on where to start, or something in-between? Hi Reddit, I\u2019m Alex, working on IBM watsonx Code Assistant. Join me for my AMA to discuss how AI can help developers to do more high-impact work, and less boilerplate work.", "subreddit": "u_ibm", "url": "https://www.reddit.com/user/ibm/comments/1grzext/ai_helping_to_code_excited_about_its_potential/", "votes": 329, "comments": 92, "date": "2024-11-15"}, {"title": "50+ Openclaw Alternatives for Business", "subreddit": "AI_Agents", "url": "https://www.reddit.com/r/AI_Agents/comments/1raq9qy/50_openclaw_alternatives_for_business/", "votes": 224, "comments": 107, "date": "2026-02-21"}, {"title": "Hi Reddit! I\u2019m Edward Calvesbert, VP, Product Management, watsonx at IBM. Gen AI is revolutionizing how the world works, but its success hinges on smart data management. Join me on 5/30 at 1PM ET to dig into how data can power AI solutions that boost efficiency and solve real-world problems. AMA!", "subreddit": "u_ibm", "url": "https://www.reddit.com/user/ibm/comments/1cz1lxe/hi_reddit_im_edward_calvesbert_vp_product/", "votes": 0, "comments": 287, "date": "2024-05-23"}], "date_min": "2021-02-18", "date_max": "2026-07-05", "unique_stories": 222, "syndicated_dupe_stories": 9}, "Witness AI": {"display_name": "WitnessAI", "color": "#9b59b6", "raw_posts": 123, "analyzed_posts": 12, "excluded_posts": 111, "excluded_job_listings": 28, "excluded_job_roundup": 1, "excluded_irrelevant": 51, "total_comments": 3, "total_mentions": 27, "pos": 1, "neu": 26, "neg": 0, "net_sentiment": 3.7, "pos_pct": 3.7, "neu_pct": 96.3, "neg_pct": 0.0, "top_subreddits": [["Build_AI_Agents", 4], ["Multiplatform_AI", 2], ["pwnhub", 2], ["japanfintech", 1], ["kainjoo", 1], ["secithubcommunity", 1], ["u_enoumen", 1]], "months": [["2024-05", 3], ["2026-01", 9]], "pain_points": [["Integration complexity", 7], ["Pricing / cost", 2], ["Performance overhead", 2], ["Maturity / enterprise readiness", 2], ["Documentation / support", 2], ["Data / policy accuracy", 2], ["Coverage / false positives", 2], ["Vendor trust / hype", 1]], "top_keywords": [["agents", 35], ["pcs", 28], ["source", 23], ["copilot", 23], ["models", 19], ["million", 18], ["powered", 17], ["autonomous", 16], ["generative", 16], ["tools", 15], ["windows", 15], ["tasks", 14], ["voice", 14], ["data", 14], ["openai", 14], ["model", 13], ["first", 13], ["build", 12], ["microsoft's", 12], ["funding", 11]], "top_topics": [["copilot plus", 8], ["plus pcs", 8], ["generative remove", 7], ["phi silica", 6], ["windows laptops", 6], ["battery life", 6], ["grounding dino", 6], ["copilot pcs", 5], ["real time", 5], ["scarlett johansson", 5], ["daily news", 4], ["open source", 4], ["automate tasks", 4], ["build build", 4], ["until tomorrow", 4], ["tomorrow happy", 4]], "quotes_pos": [[1, "The fund, named the \"SMBC Fin Atlas Beyond Fund\" and launched in collaboration with Fin Capital, has participated in the recent $58 million funding round for WitnessAI, an emerging leader in artificial intelligence security and governance.", "https://www.reddit.com/r/japanfintech/comments/1qe1pwe/smbc_fin_atlas_beyond_fund_makes_inaugural_bet_on/"]], "quotes_neg": [], "top_posts": [{"title": "AI Agent Daily News: 2026-01-14", "subreddit": "Build_AI_Agents", "url": "https://www.reddit.com/r/Build_AI_Agents/comments/1qd0vis/ai_agent_daily_news_20260114/", "votes": 3, "comments": 1, "date": "2026-01-14"}, {"title": "AI Agent Daily News: 2026-01-16", "subreddit": "Build_AI_Agents", "url": "https://www.reddit.com/r/Build_AI_Agents/comments/1qetmbg/ai_agent_daily_news_20260116/", "votes": 2, "comments": 1, "date": "2026-01-16"}, {"title": "AI Agent Daily News: 2026-01-18", "subreddit": "Build_AI_Agents", "url": "https://www.reddit.com/r/Build_AI_Agents/comments/1qglm3b/ai_agent_daily_news_20260118/", "votes": 2, "comments": 0, "date": "2026-01-18"}, {"title": "AI Agent Daily News: 2026-01-20", "subreddit": "Build_AI_Agents", "url": "https://www.reddit.com/r/Build_AI_Agents/comments/1qif4c1/ai_agent_daily_news_20260120/", "votes": 2, "comments": 0, "date": "2026-01-20"}, {"title": "Why VCs Are Investing Big in AI Security Technologies", "subreddit": "kainjoo", "url": "https://www.reddit.com/r/kainjoo/comments/1qq3m58/why_vcs_are_investing_big_in_ai_security/", "votes": 1, "comments": 1, "date": "2026-01-29"}, {"title": "WitnessAI Secures $58 Million to Strengthen AI Security Infrastructure", "subreddit": "pwnhub", "url": "https://www.reddit.com/r/pwnhub/comments/1qct1mx/witnessai_secures_58_million_to_strengthen_ai/", "votes": 1, "comments": 1, "date": "2026-01-14"}, {"title": "Rogue Agents and Shadow AI: The Surge in AI Security Investment", "subreddit": "pwnhub", "url": "https://www.reddit.com/r/pwnhub/comments/1qhadc5/rogue_agents_and_shadow_ai_the_surge_in_ai/", "votes": 1, "comments": 1, "date": "2026-01-19"}, {"title": "WitnessAI just raised $58M to secure AI agents", "subreddit": "secithubcommunity", "url": "https://www.reddit.com/r/secithubcommunity/comments/1qcp54h/witnessai_just_raised_58m_to_secure_ai_agents/", "votes": 1, "comments": 1, "date": "2026-01-14"}, {"title": "WitnessAI Secures $27.5 Million Funding to Empower Secure AI Utilization", "subreddit": "Multiplatform_AI", "url": "https://www.reddit.com/r/Multiplatform_AI/comments/1cyx3w2/witnessai_secures_275_million_funding_to_empower/", "votes": 1, "comments": 0, "date": "2024-05-23"}, {"title": "WitnessAI is pioneering the establishment of guardrails for generative AI models", "subreddit": "Multiplatform_AI", "url": "https://www.reddit.com/r/Multiplatform_AI/comments/1d1arb5/witnessai_is_pioneering_the_establishment_of/", "votes": 1, "comments": 0, "date": "2024-05-26"}], "date_min": "2024-05-22", "date_max": "2026-01-29", "unique_stories": 12, "syndicated_dupe_stories": 0}}, "combined_kw": [["data", 682], ["code", 439], ["agents", 433], ["work", 386], ["time", 361], ["cloud", 334], ["real", 323], ["company", 314], ["tools", 308], ["platform", 306], ["models", 291], ["model", 290], ["people", 287], ["business", 258], ["enterprise", 251], ["who", 240], ["need", 233], ["because", 228], ["good", 220], ["team", 218], ["software", 213], ["companies", 213], ["market", 212], ["systems", 210], ["years", 210], ["way", 201], ["know", 199], ["see", 196], ["want", 194], ["open", 192], ["product", 189], ["i'm", 185], ["build", 185], ["going", 181], ["tool", 178], ["partners", 178], ["tech", 177], ["assistant", 177], ["help", 174], ["dvlt", 169]], "combined_topic": [["open source", 86], ["real time", 73], ["code assistant", 73], ["real world", 57], ["prompt injection", 46], ["red hat", 44], ["years ago", 41], ["project vault", 38], ["multi cloud", 35], ["partner plus", 35], ["claude code", 34], ["supply chain", 29], ["large language", 29], ["language models", 29], ["plus programma", 28], ["partners staat", 27], ["long term", 27], ["quantum computing", 27], ["last year", 26], ["managed service", 26], ["artificial intelligence", 25], ["service providers", 25], ["hybrid cloud", 25], ["people who", 24], ["customer service", 23], ["machine learning", 23], ["granite models", 22], ["long time", 20], ["foundation models", 20], ["tool call", 19]], "combined_subs": [["IBM", 64], ["ITChannelPro", 20], ["Build_AI_Agents", 11], ["DutchITChannel", 10], ["MSP2DAY", 10], ["u_ibm", 10], ["ibmstock", 9], ["pwnhub", 7], ["TechNadu", 6], ["DVLT", 6], ["AI_Agents", 5], ["u_softtechhubus", 5], ["cybersecurity", 4], ["thestallionvibe", 4], ["BANDOFBROTHERSOFSRNE", 4], ["FutureTechFinds", 4], ["IBMi", 3], ["artificial", 3], ["hackathon", 3], ["u_DiabolikswordSecond", 3]], "crossover_posts": [{"title": "Securing AI factories, CBC workshop.", "subreddit": "CyberBreakfastClub", "url": "https://www.reddit.com/r/CyberBreakfastClub/comments/1kkxfdk/securing_ai_factories_cbc_workshop/", "votes": 1, "comments": 0, "date": "2025-05-12", "brands": ["Noma Security", "Witness AI"]}], "adjacent": {"Protect AI": {"mentions": 3, "posts": 3, "quote": "e Phoenix: open-source LLM observability, solid for trace visibility and semantic drift baselines * Protect AI Guardian: model scanning + runtime policy enforcement for AI systems * Metoro: eBPF kernel-level ag", "subreddit": "AI_Agents"}, "Archestra": {"mentions": 1, "posts": 1, "quote": "P space or using these tools? Would love to hear what problems you're solving!   Don\u2019t miss https://archestra.ai   Looks really interesting!   The UI looks clean, I have to try it :)   Thanks for sharing!   Worki", "subreddit": "mcp"}, "Scalekit": {"mentions": 3, "posts": 1, "quote": "single pane security/IT dashboards   [Ref.tools](http://Ref.tools) is :)   Hi folks, I am building [scalekit.com](http://scalekit.com) \\- the auth stack for AI applications. With our drop-in OAuth layer, you", "subreddit": "mcp"}, "MCP Manager": {"mentions": 2, "posts": 1, "quote": "nts   [https://github.com/cloudshipai/station](https://github.com/cloudshipai/station)   I work at [MCP Manager](https://mcpmanager.ai/), a production-grade MCP gateway that provides observability, governance, s", "subreddit": "mcp"}, "MintMCP": {"mentions": 1, "posts": 1, "quote": "de MCP gateway that provides observability, governance, security and identity management.   https://mintmcp.com def worth checking out!   We are building basicmemory - [https://basicmemory.com](https://basic", "subreddit": "mcp"}, "OneMCP": {"mentions": 5, "posts": 1, "quote": "to secure only your MCP servers without ripping and replacing your current stack.   I'm working on OneMCP all day every day and appreciate you starting this thread. It\u2019s an open source runtime that takes y", "subreddit": "mcp"}, "PolyMCP": {"mentions": 4, "posts": 1, "quote": "son.io/](https://counsel.getmason.io/)   That's interesting! Thanks for sharing :)   I'm working on PolyMCP day and night! I recently added inspectors, skills, and much more. I hope to see PolyMCP listed lik", "subreddit": "mcp"}, "Kurral": {"mentions": 1, "posts": 1, "quote": "://dasblueyeddevil.github.io/Daem0n-MCP/](https://dasblueyeddevil.github.io/Daem0n-MCP/)   Building kurral MCP security infra.   I'm working on CloudshipAI we're focused on saving teams bandwidth on their i", "subreddit": "mcp"}, "CloudshipAI": {"mentions": 3, "posts": 1, "quote": "tps://dasblueyeddevil.github.io/Daem0n-MCP/)   Building kurral MCP security infra.   I'm working on CloudshipAI we're focused on saving teams bandwidth on their infrastructure ops with forward deployed agent tea", "subreddit": "mcp"}, "Ref.tools": {"mentions": 2, "posts": 1, "quote": "ty layer for MCP. Integration with standard SIEM and existing single pane security/IT dashboards   [Ref.tools](http://Ref.tools) is :)   Hi folks, I am building [scalekit.com](http://scalekit.com) \\- the auth", "subreddit": "mcp"}, "AgentixLabs": {"mentions": 8, "posts": 7, "quote": ".).  I have been bookmarking agent governance / orchestration writeups, a few are here: https://www.agentixlabs.com/blog/   Yeah 100%. Once an agent can trigger builds, open PRs, or touch secrets, it\u2019s basically", "subreddit": "tellerstech"}, "Mastra": {"mentions": 5, "posts": 2, "quote": "I missed that are worth checking out?    manus, saner, clay, and make are toolkit   Take a look to Mastra: https://mastra.ai/   Aren't you getting enough users by throwing your useless book at events?   On", "subreddit": "AI_Agents"}, "ToolWave": {"mentions": 3, "posts": 3, "quote": "and conditions with no pre-training required.  **Product Link:** [Visit Watsonx.ai by ibm](https://toolwave.io/tool/watsonxai-by-ibm)", "subreddit": "FutureTechFinds"}, "Wiz": {"mentions": 2, "posts": 2, "quote": "are. Furthermore, Alphabet is reportedly nearing a $30 billion acquisition of cybersecurity startup Wiz, which would significantly bolster Google's cloud computing efforts and enhance its security featur", "subreddit": "thestallionvibe"}, "edison.watch": {"mentions": 2, "posts": 1, "quote": "[https://basicmemory.com](https://basicmemory.com)   AI memory for humans (and LLMs).   Working on [edison.watch](http://edison.watch) \\- deterministic security layer for MCP. Integration with standard SIEM and e", "subreddit": "mcp"}}}</script>
+<script>
+const DATA = JSON.parse(document.getElementById('data-blob').textContent);
+const $ = s => document.querySelector(s);
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt = n => n.toLocaleString('en-US');
+
+const ORDER = DATA.order;
+const COMP = DATA.comp;
+const OV = DATA.overview;
+
+function fmtDate(d){
+  if(!d) return '—';
+  const dt = new Date(d+'T00:00:00Z');
+  return dt.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric',timeZone:'UTC'});
+}
+function monthLabel(m){
+  const [y,mo] = m.split('-');
+  const names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return names[parseInt(mo,10)-1] + " '" + y.slice(2);
+}
+
+$('#daterange').textContent = fmtDate(OV.date_min) + ' → ' + fmtDate(OV.date_max);
+
+/* ---------- OVERVIEW: competitor hero cards ---------- */
+const sortedByPosts = [...ORDER].sort((a,b)=>COMP[b].analyzed_posts-COMP[a].analyzed_posts);
+$('#compcards').innerHTML = sortedByPosts.map(name=>{
+  const c = COMP[name];
+  const sentColor = c.net_sentiment>5 ? 'var(--pos)' : c.net_sentiment<-5 ? 'var(--neg)' : 'var(--muted)';
+  return `<div class="card compcard"><div class="dot" style="background:${c.color}"></div>
+    <div class="nm">${esc(c.display_name)}</div>
+    <div class="row"><span class="v">${fmt(c.analyzed_posts)}</span><span class="k">analyzed threads</span></div>
+    <div class="row"><span class="v" style="font-size:16px">${fmt(c.total_mentions)}</span><span class="k">mentions</span></div>
+    <div class="row"><span class="v" style="font-size:16px;color:${sentColor}">${c.net_sentiment>0?'+':''}${c.net_sentiment}</span><span class="k">net sentiment</span></div>
+    <div class="foot">${fmt(c.raw_posts)} raw posts scraped · ${fmt(c.excluded_posts)} excluded as noise</div>
+  </div>`;
+}).join('');
+
+$('#scalebar').innerHTML = `
+  <span><b>${fmt(OV.total_raw_posts)}</b> raw posts scraped</span>
+  <span><b>${fmt(OV.total_analyzed_posts)}</b> analyzed after noise filtering</span>
+  <span><b>${fmt(OV.total_excluded_posts)}</b> excluded (jobs / off-topic / bot roundups)</span>
+  <span><b>${fmt(OV.total_comments)}</b> comments analyzed</span>
+  <span><b>${fmt(OV.total_mentions)}</b> scored brand mentions</span>
+  <span><b>${OV.n_adjacent}</b> adjacent tools surfaced</span>
+`;
+
+/* ---------- LANDSCAPE FINDING ---------- */
+let totPos=0, totNeu=0, totNeg=0, totScored=0;
+ORDER.forEach(n=>{ totPos+=COMP[n].pos; totNeu+=COMP[n].neu; totNeg+=COMP[n].neg; });
+totScored = totPos+totNeu+totNeg;
+const pctNeu = Math.round(100*totNeu/totScored);
+$('#pctSyndicated').textContent = pctNeu + '%';
+$('#findingCopy').innerHTML = `Across <b>${fmt(OV.total_analyzed_posts)}</b> relevant threads and <b>${fmt(OV.total_comments)}</b> comments, <b>${pctNeu}%</b> of the ${fmt(totScored)} scored brand mentions carry no measurable sentiment either way &mdash; mostly neutral press coverage and funding announcements rather than genuine user reaction. This category's Reddit footprint is still being built, not fought over.`;
+
+const findingItems = [
+  {tag:'0', color:'neg', title:'Operant AI: zero organic opinion', body:'All 130 scored mentions across 28 threads are neutral. Every thread is syndicated partner-program press release (frequently in Dutch), with no user pushback or praise anywhere in the corpus.'},
+  {tag:'!', color:'amber', title:'WitnessAI: the hardest brand to search for', body:'Raw scrape returned 123 posts; only 12 survived relevance filtering. "Witness AI" collides constantly with the ordinary verb phrase ("we will witness AI...") and even an anime character named Ai — a preview of what a challenger brand\'s own social listening will face.'},
+  {tag:'★', color:'pos', title:'Microsoft Agent Governance has the smallest but sharpest corpus', body:'Only 10 threads, but the most substantive engineering debate in the dataset — OWASP Agentic Top 10, zero-trust identity, execution sandboxing — the kind of technical conversation a challenger brand can realistically join.'},
+  {tag:'$', color:'muted', title:'RunLayer is already being named in vendor-race threads', body:'A single r/agenticAI/r/AI_Governance crosspost ("6 weeks, $200M+, every security vendor jumped in") frames RunLayer alongside the wider funding wave — a live example of the exact conversation agen.co wants to be cited in.'},
+  {tag:'IBM', color:'muted', title:'watsonx wins on volume, not focus', body:'872 mentions across 237 threads dwarfs every startup combined — but most of that volume is generic IBM stock/earnings chatter, not agent-governance discussion specifically.'},
+];
+$('#findingList').innerHTML += findingItems.map(f=>`
+  <div class="cl-item">
+    <div class="ico" style="background:var(--${f.color==='muted'?'neu':f.color}-soft);color:var(--${f.color==='muted'?'muted':f.color==='amber'?'amber':f.color});${f.color==='muted'?'color:var(--muted)':''}">${f.tag}</div>
+    <div class="txt"><b>${f.title}</b><span>${f.body}</span></div>
+  </div>`).join('');
+
+/* ---------- KPIs ---------- */
+const nSubs = new Set();
+ORDER.forEach(n=>COMP[n].top_subreddits.forEach(([s])=>nSubs.add(s)));
+$('#kpis').innerHTML = `
+  <div class="card kpi"><div class="k">Analyzed threads</div><div class="v">${fmt(OV.total_analyzed_posts)}</div><div class="d">across 6 tracked vendors</div></div>
+  <div class="card kpi"><div class="k">Comments analyzed</div><div class="v">${fmt(OV.total_comments)}</div><div class="d">on those threads</div></div>
+  <div class="card kpi"><div class="k">Scored mentions</div><div class="v">${fmt(OV.total_mentions)}</div><div class="d">sentiment-scored brand mentions</div></div>
+  <div class="card kpi"><div class="k">Distinct subreddits</div><div class="v">${nSubs.size}+</div><div class="d">communities touched</div></div>
+`;
+
+/* ---------- SHARE OF VOICE BARS ---------- */
+const maxPosts = Math.max(...ORDER.map(n=>COMP[n].analyzed_posts));
+$('#sovbars').innerHTML = sortedByPosts.map((name,i)=>{
+  const c = COMP[name];
+  const w = c.pos+c.neu+c.neg || 1;
+  return `<div class="trow">
+    <div class="rank">${i+1}</div>
+    <div class="nm">${esc(c.display_name)}</div>
+    <div class="sbar" title="${c.pos_pct}% pos / ${c.neu_pct}% neu / ${c.neg_pct}% neg">
+      <i class="sp" style="width:${100*c.pos/w}%"></i>
+      <i class="sn" style="width:${100*c.neu/w}%"></i>
+      <i class="sg" style="width:${100*c.neg/w}%"></i>
+    </div>
+    <div class="ct">${c.analyzed_posts}<small>threads</small></div>
+  </div>`;
+}).join('');
+
+/* ---------- TREND CHART (SVG multi-line) ---------- */
+(function(){
+  const allMonths = new Set();
+  ORDER.forEach(n=>COMP[n].months.forEach(([m])=>allMonths.add(m)));
+  const months = [...allMonths].sort();
+  if(months.length < 2){ $('#trendchart').innerHTML = '<p style="color:var(--muted);font-size:12.5px;padding:10px 4px">Not enough monthly spread to chart.</p>'; return; }
+  const W = 1100, H = 220, padL = 34, padB = 26, padT = 10, padR = 14;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const maxCount = Math.max(1, ...ORDER.map(n=>Math.max(0,...COMP[n].months.map(([,c])=>c))));
+  const xFor = i => padL + (months.length===1?0:i/(months.length-1))*plotW;
+  const yFor = v => padT + plotH - (v/maxCount)*plotH;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none" style="overflow:visible">`;
+  // gridlines
+  for(let g=0; g<=4; g++){
+    const y = padT + plotH - g/4*plotH;
+    svg += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+    svg += `<text x="${padL-8}" y="${y+3}" font-size="9.5" fill="var(--faint)" text-anchor="end" font-family="JetBrains Mono">${Math.round(g/4*maxCount)}</text>`;
+  }
+  ORDER.forEach(name=>{
+    const c = COMP[name];
+    const map = Object.fromEntries(c.months);
+    const pts = months.map((m,i)=>`${xFor(i)},${yFor(map[m]||0)}`).join(' ');
+    svg += `<polyline points="${pts}" fill="none" stroke="${c.color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  });
+  // x labels: first, ~mid, last
+  [0, Math.floor((months.length-1)/2), months.length-1].forEach(i=>{
+    svg += `<text x="${xFor(i)}" y="${H-6}" font-size="10" fill="var(--faint)" text-anchor="middle" font-family="JetBrains Mono">${monthLabel(months[i])}</text>`;
+  });
+  svg += `</svg>`;
+  $('#trendchart').innerHTML = svg;
+  $('#trendlegend').innerHTML = ORDER.map(n=>`<span><i style="background:${COMP[n].color}"></i>${esc(COMP[n].display_name)}</span>`).join('');
+})();
+
+/* ---------- SENTIMENT: diverging bars ---------- */
+const sortedBySent = [...ORDER].sort((a,b)=>COMP[b].net_sentiment-COMP[a].net_sentiment);
+const maxAbsSent = Math.max(20, ...ORDER.map(n=>Math.abs(COMP[n].net_sentiment)));
+$('#diverging').innerHTML = sortedBySent.map(name=>{
+  const c = COMP[name];
+  const pct = Math.min(50, Math.abs(c.net_sentiment)/maxAbsSent*50);
+  return `<div class="dvrow">
+    <div class="nm">${esc(c.display_name)}</div>
+    <div class="dvtrack"><div class="mid"></div>
+      ${c.net_sentiment>=0 ? `<div class="fp" style="width:${pct}%"></div>` : `<div class="fn" style="width:${pct}%"></div>`}
+    </div>
+    <div class="val" style="color:${c.net_sentiment>0?'var(--pos)':c.net_sentiment<0?'var(--neg)':'var(--muted)'}">${c.net_sentiment>0?'+':''}${c.net_sentiment}</div>
+  </div>`;
+}).join('');
+
+/* ---------- DONUT (overall sentiment mix) ---------- */
+(function(){
+  const total = totPos+totNeu+totNeg;
+  const segs = [
+    {v:totPos, color:'var(--pos)', label:'Positive'},
+    {v:totNeu, color:'var(--neu)', label:'Neutral'},
+    {v:totNeg, color:'var(--neg)', label:'Negative'},
+  ];
+  const r = 58, cx=75, cy=75, circ = 2*Math.PI*r;
+  let offset = 0;
+  let svg = '';
+  segs.forEach(s=>{
+    const frac = s.v/total;
+    const dash = frac*circ;
+    svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="20"
+      stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += dash;
+  });
+  svg += `<text x="${cx}" y="${cy-4}" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="20" fill="var(--ink)">${fmt(total)}</text>`;
+  svg += `<text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="9.5" fill="var(--muted)">mentions</text>`;
+  $('#donut').innerHTML = svg;
+  $('#dleg').innerHTML = segs.map(s=>`<div><span class="swatch" style="background:${s.color}"></span>${s.label}<b>${Math.round(100*s.v/total)}%</b></div>`).join('');
+})();
+
+/* ---------- PAIN POINT MATRIX ---------- */
+(function(){
+  const allPains = new Set();
+  ORDER.forEach(n=>COMP[n].pain_points.forEach(([p])=>allPains.add(p)));
+  const painsOrdered = [...allPains].sort((a,b)=>{
+    const sumA = ORDER.reduce((s,n)=>s+(Object.fromEntries(COMP[n].pain_points)[a]||0),0);
+    const sumB = ORDER.reduce((s,n)=>s+(Object.fromEntries(COMP[n].pain_points)[b]||0),0);
+    return sumB-sumA;
+  });
+  let html = '<thead><tr><th class="lab">Pain point</th>' + ORDER.map(n=>`<th>${esc(COMP[n].display_name)}</th>`).join('') + '</tr></thead><tbody>';
+  painsOrdered.forEach(p=>{
+    html += `<tr><td class="lab">${esc(p)}</td>`;
+    ORDER.forEach(n=>{
+      const val = Object.fromEntries(COMP[n].pain_points)[p] || 0;
+      const pctOfPosts = COMP[n].analyzed_posts ? val/COMP[n].analyzed_posts : 0;
+      let bg = 'transparent', col='var(--faint)';
+      if(val>0){
+        if(pctOfPosts>0.4){bg='var(--neg-soft)'; col='var(--neg)';}
+        else if(pctOfPosts>0.15){bg='var(--amber-soft)'; col='#7A501C';}
+        else {bg='var(--neu-soft)'; col='var(--muted)';}
+      }
+      html += `<td><span class="heat" style="background:${bg};color:${col}">${val||'–'}</span></td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  $('#paintable').innerHTML = html;
+})();
+
+/* ---------- CROSS-CATEGORY KEYWORDS / TOPICS ---------- */
+function renderBarList(elId, pairs, max){
+  const m = Math.max(...pairs.map(p=>p[1]));
+  $(elId).innerHTML = pairs.slice(0,max).map(([label,count])=>`
+    <div class="b"><div class="l">${esc(label)}</div><div class="t"><i style="width:${100*count/m}%"></i></div><div class="c">${count}</div></div>
+  `).join('');
+}
+renderBarList('#combinedKw', DATA.combined_kw, 18);
+renderBarList('#combinedTopics', DATA.combined_topic, 16);
+renderBarList('#combinedSubs', DATA.combined_subs, 14);
+
+/* ---------- CROSSOVER THREADS ---------- */
+if(DATA.crossover_posts.length){
+  $('#crossoverList').innerHTML = DATA.crossover_posts.map(p=>`
+    <div style="padding:12px 0;border-bottom:1px solid var(--line)">
+      <div style="font-weight:600;font-size:13.5px"><a href="${p.url}" target="_blank" rel="noopener">${esc(p.title)}</a></div>
+      <div class="chips">${p.brands.map(b=>`<span class="chip">${esc(COMP[b].display_name)}</span>`).join('')}</div>
+      <div class="sr" style="margin-top:5px">r/${esc(p.subreddit)} · ${p.votes} votes · ${p.comments} comments · ${fmtDate(p.date)}</div>
+    </div>`).join('');
+} else {
+  $('#crossoverWrap').style.display = 'none';
+}
+
+$('#subNotes').innerHTML = `
+  <p style="margin-bottom:10px"><b>IBM</b> and its own brand-controlled subs (u_ibm, ibmstock, DVLT) dominate raw volume — reflecting watsonx's status as a public-company product line rather than a startup being organically discussed.</p>
+  <p style="margin-bottom:10px"><b>ITChannelPro / DutchITChannel / MSP2DAY</b> appear repeatedly across RunLayer, Operant AI, and Noma Security — these are syndicated MSP/channel-news bots, not communities forming opinions.</p>
+  <p><b>Build_AI_Agents, pwnhub, AI_Governance, agenticAI</b> are the closest thing to genuine practitioner communities in this dataset — small, but the highest-signal venues for a challenger brand to show up in.</p>
+`;
+
+/* ---------- ADJACENT TOOLS ---------- */
+const ADJ_TAGS = {
+  'Protect AI':'security','MCP Manager':'security','MintMCP':'security','OneMCP':'security',
+  'Kurral':'security','edison.watch':'security','Wiz':'security',
+  'Archestra':'infra','Scalekit':'infra','PolyMCP':'infra','CloudshipAI':'infra','Ref.tools':'infra','Mastra':'infra',
+  'AgentixLabs':'content','ToolWave':'content',
+};
+const ADJ_LABELS = {security:'Security / Governance', infra:'Dev Infra / Framework', content:'Content / Directory'};
+const adjSorted = Object.entries(DATA.adjacent).sort((a,b)=>b[1].mentions-a[1].mentions);
+$('#adjacentCards').innerHTML = adjSorted.map(([tool,r])=>{
+  const tag = ADJ_TAGS[tool] || 'infra';
+  return `<div class="card adjcard">
+    <span class="tag ${tag}">${ADJ_LABELS[tag]}</span>
+    <div class="nm">${esc(tool)}</div>
+    <div class="cnt">${r.mentions} mention${r.mentions>1?'s':''} · ${r.posts} thread${r.posts>1?'s':''} · r/${esc(r.subreddit)}</div>
+    <div class="q">"${esc(r.quote.slice(0,150))}${r.quote.length>150?'…':''}"</div>
+  </div>`;
+}).join('');
+
+/* ---------- DEEP DIVES ---------- */
+const container = document.createElement('div');
+container.id = 'deepdiveContainer2';
+ORDER.forEach(name=>{
+  const c = COMP[name];
+  const sec = document.createElement('section');
+  sec.className = 'dd-section';
+  sec.id = 'dd-' + name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+
+  const w = c.pos+c.neu+c.neg || 1;
+  const painHtml = c.pain_points.length ? c.pain_points.map(([p,n])=>`
+    <div class="b"><div class="l">${esc(p)}</div><div class="t"><i style="width:${100*n/Math.max(...c.pain_points.map(x=>x[1]))}%"></i></div><div class="c">${n}</div></div>
+  `).join('') : '<p style="font-size:12.5px;color:var(--faint)">No recurring pain-point language detected in this small a corpus.</p>';
+
+  const topPostsHtml = c.top_posts.slice(0,6).map(p=>`
+    <tr>
+      <td class="ti"><a href="${p.url}" target="_blank" rel="noopener">${esc(p.title)}</a></td>
+      <td class="sr">r/${esc(p.subreddit)}<br>${fmtDate(p.date)}</td>
+      <td class="mt">${p.votes}<small> votes</small></td>
+      <td class="mt">${p.comments}<small> cmts</small></td>
+    </tr>`).join('');
+
+  const quotesPosHtml = c.quotes_pos.length ? c.quotes_pos.slice(0,3).map(([sc,ctx,url])=>`
+    <div class="qcard pos">${esc(ctx)}${url?`<a href="${url}" target="_blank" rel="noopener">View thread →</a>`:''}</div>`).join('')
+    : '<p style="font-size:12px;color:var(--faint)">No clearly positive quotes surfaced.</p>';
+  const quotesNegHtml = c.quotes_neg.length ? c.quotes_neg.slice(0,3).map(([sc,ctx,url])=>`
+    <div class="qcard neg">${esc(ctx)}${url?`<a href="${url}" target="_blank" rel="noopener">View thread →</a>`:''}</div>`).join('')
+    : '<p style="font-size:12px;color:var(--faint)">No clearly negative quotes surfaced.</p>';
+
+  const subChips = c.top_subreddits.slice(0,8).map(([s,n])=>`<span class="srchip">r/${esc(s)} <b>${n}</b></span>`).join('');
+
+  let noteHtml = '';
+  if(name==='Operant AI'){
+    noteHtml = `<div class="dd-note">⚠ 100% of scored mentions are neutral. This corpus is almost entirely syndicated Dutch-language partner-program press releases — there is no organic community reaction to Operant AI anywhere in this dataset.</div>`;
+  } else if(name==='Witness AI'){
+    noteHtml = `<div class="dd-note">⚠ 111 of 123 raw scraped posts were excluded. "Witness AI" collides heavily with the ordinary verb "witness" + "AI"/"Ai" (a common name), plus an unrelated online usage of "Witness AI" as a generic concept name. Treat this brand's volume as a lower bound, not a precise count.</div>`;
+  } else if(name==='watsonx'){
+    noteHtml = `<div class="dd-note">ℹ Includes all watsonx-mentioning threads, but most volume is general IBM stock/earnings/product chatter rather than agent-governance-specific discussion — treat this as the noisiest but largest-reach corpus in the set.</div>`;
+  } else if(name==='Microsoft Agent Governance'){
+    noteHtml = `<div class="dd-note">ℹ Smallest corpus (10 threads) but the most technically substantive — the only vendor here with real engineer-to-engineer debate (OWASP Agentic Top 10, zero-trust identity, execution sandboxing).</div>`;
+  }
+
+  sec.innerHTML = `
+    <div class="dd-head"><span class="swatch-lg" style="background:${c.color}"></span><h3>${esc(c.display_name)}</h3></div>
+    <div class="dd-meta">${c.analyzed_posts} analyzed threads (of ${c.raw_posts} scraped) · ${c.total_comments} comments · ${c.total_mentions} scored mentions · ${fmtDate(c.date_min)} → ${fmtDate(c.date_max)}</div>
+    ${noteHtml}
+    <div class="grid dd-stats">
+      <div class="card dd-stat"><div class="k">Net sentiment</div><div class="v" style="color:${c.net_sentiment>0?'var(--pos)':c.net_sentiment<0?'var(--neg)':'var(--muted)'}">${c.net_sentiment>0?'+':''}${c.net_sentiment}</div></div>
+      <div class="card dd-stat"><div class="k">Positive</div><div class="v" style="color:var(--pos)">${c.pos_pct}%</div></div>
+      <div class="card dd-stat"><div class="k">Neutral</div><div class="v" style="color:var(--muted)">${c.neu_pct}%</div></div>
+      <div class="card dd-stat"><div class="k">Negative</div><div class="v" style="color:var(--neg)">${c.neg_pct}%</div></div>
+      <div class="card dd-stat"><div class="k">Excluded as noise</div><div class="v">${c.excluded_posts}</div></div>
+    </div>
+    <div class="grid dd-body">
+      <div class="card panel">
+        <h3>Top threads by engagement</h3>
+        <div class="ps">Ranked by votes + comments</div>
+        <table class="tbl"><thead><tr><th>Thread</th><th>Subreddit</th><th style="text-align:right">Votes</th><th style="text-align:right">Comments</th></tr></thead>
+        <tbody>${topPostsHtml || '<tr><td colspan="4" style="color:var(--faint);font-size:12.5px">No threads to show.</td></tr>'}</tbody></table>
+      </div>
+      <div class="card panel">
+        <h3>Recurring pain points</h3>
+        <div class="ps">Threads surfacing each theme</div>
+        <div class="blist">${painHtml}</div>
+        <h3 style="margin-top:20px">Subreddits</h3>
+        <div class="srchips">${subChips || '<span style="color:var(--faint);font-size:12px">None</span>'}</div>
+      </div>
+    </div>
+    <div class="grid qgrid" style="margin-top:14px">
+      <div><h4 style="font-size:12.5px;font-weight:700;color:var(--pos);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Representative positive</h4>${quotesPosHtml}</div>
+      <div><h4 style="font-size:12.5px;font-weight:700;color:var(--neg);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Representative negative</h4>${quotesNegHtml}</div>
+    </div>
+  `;
+  container.appendChild(sec);
+});
+$('#deepdiveContainer').replaceWith(container);
+container.id = 'deepdiveContainer';
+
+/* ---------- FOOTER / METHODOLOGY ---------- */
+$('#methodology').innerHTML = `
+  <b>Methodology.</b> ${fmt(OV.total_raw_posts)} Reddit posts (with full comment trees) were scraped for six tracked vendors: Microsoft Agent Governance, Noma Security, Operant AI, RunLayer, IBM watsonx, and WitnessAI, then joined against a separate CSV export (title+subreddit key, with title-only fallback) to recover direct post URLs, vote counts, and comment counts. Brand detection uses curated regex per vendor; ambiguous short brand names (e.g. "Operant", "Noma") required nearby context words, and "Witness AI" required exclusion of its common use as an ordinary verb phrase ("we will witness AI...") and one unrelated online usage of "Witness AI" as a generic concept name unrelated to the vendor — after filtering, ${fmt(OV.total_excluded_posts)} of ${fmt(OV.total_raw_posts)} scraped posts were excluded (job listings, bot-generated jobs roundups, and posts with no genuine brand match) leaving ${fmt(OV.total_analyzed_posts)} analyzed threads and ${fmt(OV.total_comments)} comments.<br><br>
+  Sentiment is a domain-tuned lexicon scorer applied in a tight window (the specific bullet/sentence containing each mention, not the full comment) so multi-brand roundup posts don't bleed sentiment across vendors; it is directional, not a substitute for manual review, and a meaningful share of the corpus is non-English (Dutch/Italian syndicated press), where the English-only lexicon is lower-confidence. Vendors with very low mention counts (Microsoft Agent Governance: 17, Noma Security: 33, WitnessAI: 27) carry a wide margin of error — read their sentiment as directional signal, not precision measurement. Pain-point taxonomy and keyword/topic extraction are keyword-pattern based; adjacent-tool mentions were found by sweeping the full corpus for known category terms and manually verifying context. Date range spans ${fmtDate(OV.date_min)} to ${fmtDate(OV.date_max)}.
+`;
+
+/* nav active state */
+const secs=[...document.querySelectorAll('main > section')];
+const navlinks=[...document.querySelectorAll('#nav a')];
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){navlinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}});},{rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
