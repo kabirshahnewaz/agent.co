@@ -6,13 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **deliverables repository for a marketing/research agency** (WebShapers Agency), not a software project. It has no build system, package manager, tests, or application code. The tracked content is a set of **standalone HTML intelligence reports** produced for the client **agen.co** — an AI-agent security/governance company — based on Reddit market research.
 
-Current reports:
-- `agenco_Subreddit_Intelligence_Map.html` — map of relevant subreddits, audience sizing, and targeting.
-- `Agen_Reddit_Marketing_Roadmap.html` — actionable Reddit marketing roadmap.
-- `AI_Agent_Security_Reddit_Market_Intelligence.html` — market intelligence on the AI agent security space.
-- `AI_Agent_Governance_Reddit_Competitive_Intelligence.html` — competitive intelligence on AI agent governance.
+Current reports (filenames are kebab-case and mirror the shared page-nav menu labels):
+- `overview.html` — "Overview": landing page summarizing the whole Reddit intelligence suite.
+- `roadmap.html` — "Roadmap": actionable Reddit marketing roadmap.
+- `competitive-analysis.html` — "Competitive Analysis": named-competitor competitive intelligence.
+- `market-analysis.html` — "Market Analysis": category-wide market intelligence on AI agent security.
+- `subreddit-mapping.html` — "Subreddit Mapping": subreddit priority map, audience sizing, and targeting.
 
-Note: as of the first commit, only `README.md` is tracked in git; the HTML reports are present in the working tree but untracked. Commit deliverables when the user asks.
+Every report carries an identical global page-nav strip (`.gnav`) at the top of its sticky header that
+cross-links all five pages; the current page's link gets `class="active"`. When adding or renaming a
+report, keep the filename kebab-case, matching its menu label, and update the `.gnav` block in every file.
 
 ## Report conventions (follow these when creating or editing reports)
 
